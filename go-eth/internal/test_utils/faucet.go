@@ -2,7 +2,6 @@ package test_utils
 
 import (
 	"context"
-	"crypto/ecdsa"
 	"log"
 	"math/big"
 
@@ -11,13 +10,12 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/johnhckuo/contract-frameworks/go-eth/internal/account"
 )
 
 const chainId = 1337
 
-var genesisAccount *ecdsa.PrivateKey
+var genesisAccount *account.Account
 
 type Node struct {
 	chainId *big.Int
@@ -33,18 +31,11 @@ func NewNode() *Node {
 func (node *Node) CreateAndFundAccount() (newAcc *account.Account) {
 
 	// create new account
-	privateKey, err := crypto.GenerateKey()
-	if err != nil {
-		log.Fatal(err)
-	}
-	auth2, _ := bind.NewKeyedTransactorWithChainID(privateKey, node.chainId)
-	publicKey := auth2.From
-
-	newAcc = account.NewAccount(publicKey, privateKey)
+	newAcc = account.NewAccount()
 
 	// construct new tx payload
 
-	auth, _ := bind.NewKeyedTransactorWithChainID(genesisAccount, node.chainId)
+	auth, _ := bind.NewKeyedTransactorWithChainID(genesisAccount.GetPrivateKey(), node.chainId)
 	fromAddress := auth.From
 	nonce, err := node.client.PendingNonceAt(context.Background(), fromAddress)
 	if err != nil {
@@ -59,7 +50,7 @@ func (node *Node) CreateAndFundAccount() (newAcc *account.Account) {
 	tx := types.NewTransaction(nonce, newAcc.GetPublicKey(), value, gasLimit, gasPrice, data)
 
 	// sign tx using genesis account private key
-	signedTx, err := types.SignTx(tx, types.NewEIP155Signer(node.chainId), genesisAccount)
+	signedTx, err := types.SignTx(tx, types.NewEIP155Signer(node.chainId), genesisAccount.GetPrivateKey())
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -91,19 +82,9 @@ func (node *Node) CreateAndFundAccount() (newAcc *account.Account) {
 
 func (node *Node) Connect() {
 
-	var err error
+	genesisAccount = account.NewAccount()
 
-	genesisAccount, err = crypto.GenerateKey()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	publicKey := genesisAccount.Public()
-	_, ok := publicKey.(*ecdsa.PublicKey)
-	if !ok {
-		panic("invalid key")
-	}
-	auth, _ := bind.NewKeyedTransactorWithChainID(genesisAccount, node.chainId)
+	auth, _ := bind.NewKeyedTransactorWithChainID(genesisAccount.GetPrivateKey(), node.chainId)
 	//create a genesis account and assign it an initial balance
 	balance := new(big.Int)
 	balance.SetString("100000000000000000000", 10) // 100 eth in wei

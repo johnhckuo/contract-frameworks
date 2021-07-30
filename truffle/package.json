@@ -1,0 +1,25 @@
+{
+  "name": "truffle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "compile": "npx truffle compile",
+    "node": "npx ganache-cli --deterministic",
+    "deploy": "npx truffle migrate --network development",
+    "console": "npx truffle console --network development",
+    "start": "npx truffle exec --network development ./scripts/index.js",
+    "test": "mocha --exit --recursive"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@openzeppelin/contracts": "^4.2.0",
+    "@openzeppelin/test-environment": "^0.1.9",
+    "@openzeppelin/test-helpers": "^0.5.12",
+    "chai": "^4.3.4",
+    "ganache-cli": "^6.12.2",
+    "mocha": "^8.1.2",
+    "truffle": "^5.4.2"
+  }
+}

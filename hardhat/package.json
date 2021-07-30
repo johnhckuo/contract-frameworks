@@ -6,18 +6,24 @@
   "scripts": {
     "test": "npx hardhat test",
     "node": "npx hardhat node",
-    "deploy": "npx hardhat run scripts/sample-script.js --network localhost",
+    "deploy": "npx hardhat run scripts/deploy.js --network localhost",
+    "start": "npx hardhat run scripts/index.js --network localhost",
     "accounts": "npx hardhat accounts",
-    "compile": "npx hardhat compile contracts/Greeter.sol"
+    "compile": "npx hardhat compile contracts/Greeter.sol",
+    "console": "npx hardhat console --network localhost"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-truffle5": "^2.0.0",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@nomiclabs/hardhat-web3": "^2.0.0",
+    "@openzeppelin/contracts": "^4.2.0",
     "chai": "^4.3.4",
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.2",
-    "hardhat": "^2.5.0"
+    "hardhat": "^2.5.0",
+    "web3": "^1.5.0"
   }
 }

@@ -2,24 +2,28 @@ package account
 
 import (
 	"crypto/ecdsa"
+	"log"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/crypto"
 )
 
 type Account struct {
 	privateKey *ecdsa.PrivateKey
-	publicKey  common.Address
 }
 
-func NewAccount(publicKey common.Address, privateKey *ecdsa.PrivateKey) *Account {
+func NewAccount() *Account {
+	privateKey, err := crypto.GenerateKey()
+	if err != nil {
+		log.Fatal(err)
+	}
 	return &Account{
 		privateKey: privateKey,
-		publicKey:  publicKey,
 	}
 }
 
 func (acc *Account) GetPublicKey() common.Address {
-	return acc.publicKey
+	return crypto.PubkeyToAddress(acc.privateKey.PublicKey)
 }
 
 func (acc *Account) GetPrivateKey() *ecdsa.PrivateKey {
