@@ -91,7 +91,7 @@ var _ = BeforeSuite(func() {
 
 var _ = AfterSuite(func() {
 	node.Client().Close()
-	//close(logs)
+	close(logs)
 })
 
 var _ = Describe("contract test", func() {

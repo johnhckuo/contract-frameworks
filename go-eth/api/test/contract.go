@@ -4,6 +4,7 @@
 package test
 
 import (
+	"errors"
 	"math/big"
 	"strings"
 
@@ -17,6 +18,7 @@ import (
 
 // Reference imports to suppress errors if they are not otherwise used.
 var (
+	_ = errors.New
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
@@ -26,20 +28,31 @@ var (
 	_ = event.NewSubscription
 )
 
+// TestMetaData contains all meta data concerning the Test contract.
+var TestMetaData = &bind.MetaData{
+	ABI: "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"ValueChanged\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"retrieve\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"store\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]",
+	Bin: "0x608060405234801561001057600080fd5b5061001a3361001f565b61006f565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b6103008061007e6000396000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c80632e64cec11461005c5780636057361d14610072578063715018a6146100875780638da5cb5b1461008f578063f2fde38b146100aa575b600080fd5b6001546040519081526020015b60405180910390f35b61008561008036600461027c565b6100bd565b005b61008561012b565b6000546040516001600160a01b039091168152602001610069565b6100856100b836600461024c565b610161565b6000546001600160a01b031633146100f05760405162461bcd60e51b81526004016100e790610295565b60405180910390fd5b60018190556040518181527f93fe6d397c74fdf1402a8b72e47b68512f0510d7b98a4bc4cbdf6ac7108b3c599060200160405180910390a150565b6000546001600160a01b031633146101555760405162461bcd60e51b81526004016100e790610295565b61015f60006101fc565b565b6000546001600160a01b0316331461018b5760405162461bcd60e51b81526004016100e790610295565b6001600160a01b0381166101f05760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b60648201526084016100e7565b6101f9816101fc565b50565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b60006020828403121561025e57600080fd5b81356001600160a01b038116811461027557600080fd5b9392505050565b60006020828403121561028e57600080fd5b5035919050565b6020808252818101527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e657260408201526060019056fea26469706673582212208027a23564bf4891d3bd95923c554ddc860c3dfdef8cd0b04ed512a6020d25e064736f6c63430008060033",
+}
+
 // TestABI is the input ABI used to generate the binding from.
-const TestABI = "[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"previousOwner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"OwnershipTransferred\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"_value\",\"type\":\"uint256\"}],\"name\":\"ValueChanged\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"retrieve\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"value\",\"type\":\"uint256\"}],\"name\":\"store\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}]"
+// Deprecated: Use TestMetaData.ABI instead.
+var TestABI = TestMetaData.ABI
 
 // TestBin is the compiled bytecode used for deploying new contracts.
-var TestBin = "0x608060405234801561001057600080fd5b5061001a3361001f565b61006f565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b6103008061007e6000396000f3fe608060405234801561001057600080fd5b50600436106100575760003560e01c80632e64cec11461005c5780636057361d14610072578063715018a6146100875780638da5cb5b1461008f578063f2fde38b146100aa575b600080fd5b6001546040519081526020015b60405180910390f35b61008561008036600461027c565b6100bd565b005b61008561012b565b6000546040516001600160a01b039091168152602001610069565b6100856100b836600461024c565b610161565b6000546001600160a01b031633146100f05760405162461bcd60e51b81526004016100e790610295565b60405180910390fd5b60018190556040518181527f93fe6d397c74fdf1402a8b72e47b68512f0510d7b98a4bc4cbdf6ac7108b3c599060200160405180910390a150565b6000546001600160a01b031633146101555760405162461bcd60e51b81526004016100e790610295565b61015f60006101fc565b565b6000546001600160a01b0316331461018b5760405162461bcd60e51b81526004016100e790610295565b6001600160a01b0381166101f05760405162461bcd60e51b815260206004820152602660248201527f4f776e61626c653a206e6577206f776e657220697320746865207a65726f206160448201526564647265737360d01b60648201526084016100e7565b6101f9816101fc565b50565b600080546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b60006020828403121561025e57600080fd5b81356001600160a01b038116811461027557600080fd5b9392505050565b60006020828403121561028e57600080fd5b5035919050565b6020808252818101527f4f776e61626c653a2063616c6c6572206973206e6f7420746865206f776e657260408201526060019056fea26469706673582212201007fc3755e2be8831973ac7502f4779c2b191fb71572557e9ae71b2f71aac1864736f6c63430008060033"
+// Deprecated: Use TestMetaData.Bin instead.
+var TestBin = TestMetaData.Bin
 
 // DeployTest deploys a new Ethereum contract, binding an instance of Test to it.
 func DeployTest(auth *bind.TransactOpts, backend bind.ContractBackend) (common.Address, *types.Transaction, *Test, error) {
-	parsed, err := abi.JSON(strings.NewReader(TestABI))
+	parsed, err := TestMetaData.GetAbi()
 	if err != nil {
 		return common.Address{}, nil, nil, err
 	}
+	if parsed == nil {
+		return common.Address{}, nil, nil, errors.New("GetABI returned nil")
+	}
 
-	address, tx, contract, err := bind.DeployContract(auth, parsed, common.FromHex(TestBin), backend)
+	address, tx, contract, err := bind.DeployContract(auth, *parsed, common.FromHex(TestBin), backend)
 	if err != nil {
 		return common.Address{}, nil, nil, err
 	}
@@ -541,7 +554,7 @@ type TestValueChanged struct {
 
 // FilterValueChanged is a free log retrieval operation binding the contract event 0x93fe6d397c74fdf1402a8b72e47b68512f0510d7b98a4bc4cbdf6ac7108b3c59.
 //
-// Solidity: event ValueChanged(uint256 _value)
+// Solidity: event ValueChanged(uint256 value)
 func (_Test *TestFilterer) FilterValueChanged(opts *bind.FilterOpts) (*TestValueChangedIterator, error) {
 
 	logs, sub, err := _Test.contract.FilterLogs(opts, "ValueChanged")
@@ -553,7 +566,7 @@ func (_Test *TestFilterer) FilterValueChanged(opts *bind.FilterOpts) (*TestValue
 
 // WatchValueChanged is a free log subscription operation binding the contract event 0x93fe6d397c74fdf1402a8b72e47b68512f0510d7b98a4bc4cbdf6ac7108b3c59.
 //
-// Solidity: event ValueChanged(uint256 _value)
+// Solidity: event ValueChanged(uint256 value)
 func (_Test *TestFilterer) WatchValueChanged(opts *bind.WatchOpts, sink chan<- *TestValueChanged) (event.Subscription, error) {
 
 	logs, sub, err := _Test.contract.WatchLogs(opts, "ValueChanged")
@@ -590,7 +603,7 @@ func (_Test *TestFilterer) WatchValueChanged(opts *bind.WatchOpts, sink chan<- *
 
 // ParseValueChanged is a log parse operation binding the contract event 0x93fe6d397c74fdf1402a8b72e47b68512f0510d7b98a4bc4cbdf6ac7108b3c59.
 //
-// Solidity: event ValueChanged(uint256 _value)
+// Solidity: event ValueChanged(uint256 value)
 func (_Test *TestFilterer) ParseValueChanged(log types.Log) (*TestValueChanged, error) {
 	event := new(TestValueChanged)
 	if err := _Test.contract.UnpackLog(event, "ValueChanged", log); err != nil {
