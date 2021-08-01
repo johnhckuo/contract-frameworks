@@ -47,12 +47,12 @@ var _ = BeforeSuite(func() {
 	auth, _ = bind.NewKeyedTransactorWithChainID(testAccount.GetPrivateKey(), node.ChainId())
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0)     // in wei
-	auth.GasLimit = uint64(300000) // in units
-	auth.GasPrice = big.NewInt(875000000)
+	auth.GasLimit = uint64(3000000) // in units
+	auth.GasPrice = big.NewInt(8750000000)
 
 	//input := "1.0"
 	//var tx *types.Transaction
-	contractAddress, _, instance, err = DeployTest(auth, node.Client())
+	contractAddress, _, instance, err = DeployTest(auth, node.Client(), "joh", "joh")
 	if err != nil {
 		log.Fatal(err)
 	}

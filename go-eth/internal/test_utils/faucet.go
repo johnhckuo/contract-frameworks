@@ -30,6 +30,7 @@ func NewNode() *Node {
 
 func (node *Node) CreateAndFundAccount() (newAcc *account.Account) {
 
+	defer node.Client().Rollback()
 	// create new account
 	newAcc = account.NewAccount()
 
@@ -96,7 +97,7 @@ func (node *Node) Connect() {
 		},
 	}
 
-	blockGasLimit := uint64(4712388)
+	blockGasLimit := uint64(4712388000)
 	node.client = backends.NewSimulatedBackend(genesisAlloc, blockGasLimit)
 
 }

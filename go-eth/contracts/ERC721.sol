@@ -3,13 +3,7 @@
 pragma solidity ^0.8.0;
 
 import "./openzeppelin-contracts/contracts/access/AccessControl.sol";
-import "./openzeppelin-contracts/contracts/access/Ownable.sol";
-import "./openzeppelin-contracts/contracts/utils/Context.sol";
-import "./openzeppelin-contracts/contracts/utils/Counters.sol";
-import "./openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
-import "./openzeppelin-contracts/contracts/token/ERC721/IERC721.sol";
-import "./openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Burnable.sol";
-import "./openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "./openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 /**
  * @dev {ERC721} token, including:
@@ -26,18 +20,28 @@ import "./openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721URIStor
  * roles, as well as the default admin role, which will let it grant both minter
  * and pauser roles to other accounts.
  */
-contract MyNFT is AccessControl, Ownable, ERC721Burnable {
-    using Counters for Counters.Counter;
+contract MyNFT is AccessControl, ERC721Enumerable {
+    //using Counters for Counters.Counter;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-    Counters.Counter private _tokenIdTracker;
+    // set init value to 1
+    uint256 private _tokenIdTracker = 1;
+    event tokenMinted(uint256, address);
 
-    // Mapping from token ID to owner address
-    mapping(uint256 => address) private _owners;
+    // for debugging
+    event ValueChanged(uint256 oldValue, uint256 newValue);
 
-    // Mapping owner address to token count
-    mapping(address => uint256) private _balances;
+      //create an array of traits to keep track of different traits
+    //no traits can be the same
+    string[] public trait;
+    mapping(string => bool) _traitExists;
+
+    // // Mapping from token ID to owner address
+    // mapping(uint256 => address) private _owners;
+
+    // // Mapping owner address to token count
+    // mapping(address => uint256) private _balances;
 
     /**
      * @dev Grants `DEFAULT_ADMIN_ROLE`, `MINTER_ROLE` and `PAUSER_ROLE` to the
@@ -52,7 +56,7 @@ contract MyNFT is AccessControl, Ownable, ERC721Burnable {
         _setupRole(MINTER_ROLE, _msgSender());
     }
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, AccessControl) returns (bool) {
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721Enumerable, AccessControl) returns (bool) {
         return super.supportsInterface(interfaceId);
     }
 
@@ -67,13 +71,34 @@ contract MyNFT is AccessControl, Ownable, ERC721Burnable {
      *
      * - the caller must have the `MINTER_ROLE`.
      */
-    function mint(address to) external onlyOwner returns (uint256) {
+    function mint(address to) public {
         require(hasRole(MINTER_ROLE, _msgSender()), "MyNFT: must have minter role to mint");
 
-        // We cannot just use balanceOf to create the new tokenId because tokens
-        // can be burned (destroyed), so we need a separate counter.
-        _safeMint(to, _tokenIdTracker.current());
-        _tokenIdTracker.increment();
-        return _tokenIdTracker.current();
+        uint256 newTokenID = _tokenIdTracker;
+        _safeMint(to, newTokenID);
+        _tokenIdTracker = _tokenIdTracker + 1;
+        emit tokenMinted(newTokenID, msg.sender);
     }
+
+
+      //create a new token by calling the mint function
+    //every token needs to be different
+    //need to pass in a trait that does not exist
+    function createNFT(string memory _trait) public {
+        
+        //check the mapping to determine if trait exists
+        require(!_traitExists[_trait]);
+        
+        require(hasRole(MINTER_ROLE, _msgSender()), "MyNFT: must have minter role to mint");
+
+        //if trait does not exist mint token and create a new token id
+        //mint for the msg.sender
+        //add trait to array and set trait in mapping to true
+
+        trait.push(_trait);
+        uint _id = trait.length - 1;
+        _safeMint(msg.sender, _id);
+        _traitExists[_trait] = true;
+    }
+
 }
