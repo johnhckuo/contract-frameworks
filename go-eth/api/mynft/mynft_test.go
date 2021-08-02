@@ -54,16 +54,20 @@ var (
 )
 
 var _ = BeforeSuite(func() {
+
+	// create a local private chain
 	node = test_utils.NewNode()
 	node.Connect()
+
+	// create root account
 	testAccount = node.CreateAndFundAccount()
 	log.Println(testAccount)
 
+	// get the latest nonce
 	nonce, err := node.Client().PendingNonceAt(context.Background(), testAccount.GetPublicKey())
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	//create a transaction signer function used for authorizing transactions in the simulated blockchain.
 	auth, _ = bind.NewKeyedTransactorWithChainID(testAccount.GetPrivateKey(), node.ChainId())
 	auth.Nonce = big.NewInt(int64(nonce))
@@ -143,7 +147,9 @@ var _ = BeforeSuite(func() {
 
 })
 
-// listen to new block event, 0 means tx failed, 1 means success, -1 means there's an error occured
+// listen to new block event
+// if new block is mined, we check the tx we've just sent and get it's status from tx receipt
+// if status is 0 means tx failed, 1 means success, -1 means there's an error occured
 func CheckTxStatus(hashToRead string) int {
 	soc := make(chan *types.Header)
 	newSub, err := node.Client().SubscribeNewHead(context.Background(), soc)
@@ -230,11 +236,37 @@ var _ = Describe("contract test", func() {
 
 	Context("Mint()", func() {
 
-		It("mint should success1", func() {
-			_, err := instance.Mint(auth, tokenOwner.GetPublicKey())
+		It("mint should success", func() {
+			tx, err := instance.Mint(auth, tokenOwner.GetPublicKey())
 			node.Client().Commit()
 			Expect(err).Should(BeNil())
 			// should start from 1
+			receipt, err := bind.WaitMined(context.Background(), node.Client(), tx)
+			Expect(err).Should(BeNil())
+			Expect(receipt.Status).Should(Equal(uint64(1)))
+		})
+
+		It("mint request from no-minter, should failed", func() {
+			tempAccount := node.CreateAndFundAccount()
+
+			// read for signing operations
+			tempAuth, _ := bind.NewKeyedTransactorWithChainID(tempAccount.GetPrivateKey(), node.ChainId())
+			tempNonce, _ := node.Client().PendingNonceAt(context.Background(), tempAccount.GetPublicKey())
+			tempAuth.Nonce = big.NewInt(int64(tempNonce))
+			tempAuth.Value = big.NewInt(0)            // in wei
+			tempAuth.GasLimit = uint64(300000000)     // in units
+			tempAuth.GasPrice = big.NewInt(765625975) //block base fee
+
+			tx, err := instance.Mint(tempAuth, tempAccount.GetPublicKey())
+			node.Client().Commit()
+			Expect(err).Should(BeNil())
+			receipt, err := bind.WaitMined(context.Background(), node.Client(), tx)
+			Expect(err).Should(BeNil())
+			Expect(receipt.Status).Should(Equal(uint64(0)))
+
+			_, err = test_utils.GetFailingMessage(node.Client(), receipt.TxHash)
+			Expect(err).ShouldNot(BeNil())
+			Expect(err.Error()).Should(Equal("execution reverted: MyNFT: must have minter role to mint"))
 		})
 
 		It("Reading transfer event", func() {

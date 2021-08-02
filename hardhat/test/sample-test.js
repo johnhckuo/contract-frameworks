@@ -1,5 +1,6 @@
 const { expect } = require("chai");
 const Box = artifacts.require("Box");
+const { ethers } = require("hardhat");
 
 //const { ethereum } = require("hardhat");
 // describe("Greeter", function () {

@@ -2,8 +2,8 @@
 
 pragma solidity ^0.8.0;
 
-import "./openzeppelin-contracts/contracts/access/AccessControl.sol";
-import "./openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 /**
  * @dev {ERC721} token, including:
@@ -52,7 +52,6 @@ contract MyNFT is AccessControl, ERC721Enumerable {
      */
     constructor(string memory name, string memory symbol) ERC721(name, symbol) {   
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-
         _setupRole(MINTER_ROLE, _msgSender());
     }
 
@@ -73,6 +72,7 @@ contract MyNFT is AccessControl, ERC721Enumerable {
      */
     function mint(address to) public {
         require(hasRole(MINTER_ROLE, _msgSender()), "MyNFT: must have minter role to mint");
+
 
         uint256 newTokenID = _tokenIdTracker;
         _safeMint(to, newTokenID);

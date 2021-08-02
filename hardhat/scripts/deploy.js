@@ -5,21 +5,26 @@
 // Runtime Environment's members available in the global scope.
 const hre = require("hardhat");
 
-var test = "john"
-// scripts/deploy.js
-async function main () {
+async function deploy() {
   // We get the contract to deploy
-  const Box = await hre.ethers.getContractFactory('Box');
-  console.log('Deploying Box...');
-  const box = await Box.deploy();
-  await box.deployed();
-  console.log('Box deployed to:', box.address);
-  //console.log('box struct: ', box)
+  const MyNFT = await hre.ethers.getContractFactory('MyNFT');
+  console.log('Deploying MyNFT...');
+  const myNFT = await MyNFT.deploy("john'nft", "john");
+  await myNFT.deployed();
+  console.log('MyNFT deployed to:', myNFT.address);
+  process.env.NFT_ADDR = myNFT.address;
+
 }
 
-main()
-  .then(() => process.exit(0))
-  .catch(error => {
-    console.error(error);
-    process.exit(1);
-  });
+
+module.exports = {
+  // scripts/deploy.js
+  deploy: deploy
+};
+
+deploy()
+.then(() => process.exit(0))
+.catch(error => {
+  console.error(error);
+  process.exit(1);
+});

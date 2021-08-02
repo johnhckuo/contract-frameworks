@@ -1,18 +1,22 @@
 // scripts/index.js
+
+var tools = require('./deploy');
+const hre = require("hardhat");
+
 async function main () {
+
+    await tools.deploy()
     // Retrieve accounts from the local node
-    const accounts = await ethers.provider.listAccounts();
+    const accounts = await hre.ethers.provider.listAccounts();
     console.log(accounts);
-    const address = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
-    const Box = await ethers.getContractFactory('Box');
-    const box = await Box.attach(address);
+    const address = process.env.NFT_ADDR;
+    const MyNFT = await hre.ethers.getContractFactory('MyNFT');
+    const nft = await MyNFT.attach(address);
 
-    // Send a transaction to store() a new value in the Box
-    await box.store(23);
+    // Mint
+    await nft.mint();
 
-    // Call the retrieve() function of the deployed Box contract
-    const value = await box.retrieve();
-    console.log('Box value is', value.toString());
+    console.log('MyNFT value is', value.toString());
   }
   
   main()

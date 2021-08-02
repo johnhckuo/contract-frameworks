@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx hardhat test",
+    "test": "npx hardhat test test/mynft-test.js --network localhost",
     "node": "npx hardhat node",
     "deploy": "npx hardhat run scripts/deploy.js --network localhost",
     "start": "npx hardhat run scripts/index.js --network localhost",
     "accounts": "npx hardhat accounts",
-    "compile": "npx hardhat compile contracts/Greeter.sol",
-    "console": "npx hardhat console --network localhost"
+    "compile": "npx hardhat compile",
+    "console": "npx hardhat console --network localhost",
+    "solc": "solc @openzeppelin/=$(pwd)/node_modules/@openzeppelin/ --abi ./contracts/ERC721.sol --bin ./contracts/ERC721.sol -o build --overwrite",
+    "abigen": "abigen --abi=./build/MyNFT.abi --bin=./build/MyNFT.bin --pkg=erc721 --out=./api/erc721/interface.go"
   },
   "author": "",
   "license": "ISC",
