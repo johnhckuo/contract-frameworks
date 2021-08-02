@@ -110,5 +110,12 @@ describe("MyNFT contract", function () {
       expect(await contract.balanceOf(accounts[2].address)).to.equal(1);
     });
 
+
+    it("Fail so that you can see error message", async function () {
+      await expect(contract.connect(accounts[1].address).fail())
+      .to.emit(contract, 'Transfer')
+      .withArgs(accounts[0].address, accounts[2].address, 1);
+    });
+
   });
 });

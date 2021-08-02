@@ -1,5 +1,4 @@
 const { expect } = require("chai");
-const Box = artifacts.require("Box");
 const { ethers } = require("hardhat");
 
 //const { ethereum } = require("hardhat");
@@ -58,13 +57,3 @@ describe('Box', function () {
   });
 });
 
-
-
-// Traditional Truffle test
-contract("Box", (accounts) => {
-  it("Should return the new greeting once it's changed", async function () {
-    const box = await Box.new();
-    await box.store(32);
-    assert.equal(await box.retrieve(), 32);
-  });
-});

@@ -1,6 +1,11 @@
 require("@nomiclabs/hardhat-waffle");
 require('@nomiclabs/hardhat-ethers')
-
+require("solidity-coverage");
+require("hardhat-gas-reporter");
+require("@nomiclabs/hardhat-solhint");
+require('hardhat-log-remover');
+require('hardhat-docgen');
+require("hardhat-tracer");
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -41,7 +46,15 @@ module.exports = {
       url: "https://eth-mainnet.alchemyapi.io/v2/123abc123abc123abc123abc123abcde"
     }
   },
-  solidity: "0.8.4",
+  solidity: {
+      version: "0.8.4",
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 1000,
+        },
+      },
+  },
   paths: {
     sources: "./contracts",
     tests: "./test",
@@ -50,5 +63,14 @@ module.exports = {
   },
   mocha: {
     timeout: 20000
+  },
+  gasReporter: {
+    currency: 'TWD',
+    gasPrice: 21
+  },
+  docgen: {
+    path: './docs',
+    clear: true,
+    runOnCompile: true,
   }
 };
