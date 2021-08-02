@@ -12,7 +12,8 @@
     "compile": "npx hardhat compile",
     "console": "npx hardhat console --network localhost",
     "solc": "solc @openzeppelin/=$(pwd)/node_modules/@openzeppelin/ --abi ./contracts/ERC721.sol --bin ./contracts/ERC721.sol -o build --overwrite",
-    "abigen": "abigen --abi=./build/MyNFT.abi --bin=./build/MyNFT.bin --pkg=erc721 --out=./api/erc721/interface.go"
+    "abigen": "abigen --abi=./build/MyNFT.abi --bin=./build/MyNFT.bin --pkg=erc721 --out=./api/go/interface.go",
+    "typechain": "./node_modules/.bin/typechain --target ethers-v5 --outDir api/ts 'artifacts/contracts/ERC721.sol/MyNFT.json'"
   },
   "author": "",
   "license": "ISC",
@@ -26,6 +27,7 @@
     "ethereum-waffle": "^3.4.0",
     "ethers": "^5.4.2",
     "hardhat": "^2.5.0",
+    "typechain": "^3.0.0",
     "web3": "^1.5.0"
   }
 }
