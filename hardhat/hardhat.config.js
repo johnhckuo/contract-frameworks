@@ -1,3 +1,5 @@
+const { task } = require("hardhat/config");
+
 require("@nomiclabs/hardhat-waffle");
 require('@nomiclabs/hardhat-ethers')
 require("solidity-coverage");
@@ -6,6 +8,9 @@ require("@nomiclabs/hardhat-solhint");
 require('hardhat-log-remover');
 require('hardhat-docgen');
 require("hardhat-tracer");
+require('dotenv').config()
+
+// require("@nomiclabs/hardhat-truffle5");
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -26,6 +31,10 @@ task("balance", "Prints an account's balance")
     console.log(web3.utils.fromWei(balance, "ether"), "ETH");
   });
 
+task("task", "just testing", function(){
+  console.log("hi")
+})
+
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -41,9 +50,15 @@ module.exports = {
       //   auto: false,
       //   interval: 0
       // }
+      forking: {
+        url: "https://eth-ropsten.alchemyapi.io/v2/" + process.env.ALCHEMY_API_KEY,
+        blockNumber: 10757709,
+        enabled: true
+      },
+      loggingEnabled: false
     },
     rinkeby: {
-      url: "https://eth-mainnet.alchemyapi.io/v2/123abc123abc123abc123abc123abcde"
+      url: "https://eth-mainnet.alchemyapi.io/v2/" + process.env.ALCHEMY_API_KEY
     }
   },
   solidity: {
@@ -51,7 +66,7 @@ module.exports = {
       settings: {
         optimizer: {
           enabled: true,
-          runs: 1000,
+          runs: 200,
         },
       },
   },
@@ -65,8 +80,10 @@ module.exports = {
     timeout: 20000
   },
   gasReporter: {
-    currency: 'TWD',
-    gasPrice: 21
+    currency: "USD",
+    enabled: true,
+    excludeContracts: [],
+    src: "./contracts",
   },
   docgen: {
     path: './docs',

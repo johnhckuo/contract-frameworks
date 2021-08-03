@@ -62,7 +62,7 @@ contract MyNFT is AccessControl, ERC721Enumerable {
     }
 
     function fail() public view{
-        console.log("oh no! it failed.... :( ");
+        console.log("oh no! it failed.... :( %s");
         revert("test failed");
     }
 

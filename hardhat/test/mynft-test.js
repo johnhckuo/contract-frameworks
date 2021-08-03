@@ -1,6 +1,19 @@
 const { expect } = require("chai");
 const { ethers } = require("hardhat");
 
+// Traditional Truffle test
+// contract("Greeter", (accounts) => {
+//   it("Should return the new greeting once it's changed", async function () {
+//     const greeter = await Greeter.new("Hello, world!");
+//     assert.equal(await greeter.greet(), "Hello, world!");
+
+//     await greeter.setGreeting("Hola, mundo!");
+
+//     assert.equal(await greeter.greet(), "Hola, mundo!");
+//   });
+// });
+
+
 describe("MyNFT contract", function () {
 
   let MyNFT;
@@ -9,6 +22,24 @@ describe("MyNFT contract", function () {
   let accounts;
 
   before(async function () {
+
+
+    await hre.network.provider.request({
+      method: "hardhat_impersonateAccount",
+      params: ["0x364d6D0333432C3Ac016Ca832fb8594A8cE43Ca6"],
+    });
+
+    //This will result in account 0x0d20...000B having a balance of 4096 wei.
+    // await network.provider.send("hardhat_setBalance", [
+    //   "0x0d2026b3EE6eC71FC6746ADb6311F6d3Ba1C000B",
+    //   "0x1000",
+    // ]);
+
+    // await hre.network.provider.request({
+    //   method: "hardhat_stopImpersonatingAccount",
+    //   params: ["0x364d6D0333432C3Ac016Ca832fb8594A8cE43Ca6"],
+    // });
+
     MyNFT = await ethers.getContractFactory("MyNFT");
     
     [owner, ...accounts] = await hre.ethers.getSigners();
@@ -102,6 +133,21 @@ describe("MyNFT contract", function () {
       .withArgs(accounts[0].address, accounts[2].address, 1);
     });
 
+
+    // it("testing", async function(){
+    //   let tx = await contract.connect(accounts[2]).transferFrom(accounts[2].address, accounts[0].address, 1)
+
+    //   const trace = await hre.network.provider.send("debug_traceTransaction", [
+    //     tx.hash,
+    //     {
+    //       disableMemory: true,
+    //       disableStack: true,
+    //       disableStorage: true,
+    //     },
+    //   ]);
+    //   console.log(trace)
+    // })
+
     it("check ownership", async function () {
       expect(await contract.ownerOf(1)).to.equal(accounts[2].address);
     });
@@ -115,6 +161,19 @@ describe("MyNFT contract", function () {
       await expect(contract.connect(accounts[1].address).fail())
       .to.emit(contract, 'Transfer')
       .withArgs(accounts[0].address, accounts[2].address, 1);
+
+
+      await network.provider.request({
+        method: "hardhat_reset",
+        params: [
+          {
+            forking: {
+              jsonRpcUrl: "https://eth-mainnet.alchemyapi.io/v2/<key>",
+              blockNumber: 11095000,
+            },
+          },
+        ],
+      });
     });
 
   });
